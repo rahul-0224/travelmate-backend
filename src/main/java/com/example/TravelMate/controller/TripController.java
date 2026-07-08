@@ -33,23 +33,22 @@ public class TripController {
         this.tripRepository = tripRepository;
     }
 
-    @GetMapping
-    @PreAuthorize("hasRole('TRAVELER') or hasRole('ADMIN')") 
-    public List<Trip> getAllTrips(@RequestParam(value = "search", required = false) String search) {
-        String username = "test_traveler"; 
-        return tripService.getTripsByTraveler(username);
-    }
+ @GetMapping
+   @PreAuthorize("hasRole('TRAVELER') or hasRole('ADMIN')")
+   public List<Trip> getAllTrips(@RequestParam(value = "search", required = false) String search,
+                                  Authentication authentication) {
+       String username = authentication.getName();
+       return tripService.getTripsByTraveler(username);
+   }
 
-    @PostMapping
-    @PreAuthorize("hasRole('TRAVELER')") 
-    public Trip createTrip(@RequestBody Trip trip) {
-        
-        trip.setItineraries(null);
-        trip.setExpenses(null);
-        
-        String username = "test_traveler";
-        return tripService.createTrip(trip, username);
-    }
+@PostMapping
+   @PreAuthorize("hasRole('TRAVELER')")
+   public Trip createTrip(@RequestBody Trip trip, Authentication authentication) {
+       trip.setItineraries(null);
+       trip.setExpenses(null);
+       String username = authentication.getName();
+       return tripService.createTrip(trip, username);
+   }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('TRAVELER')") 
